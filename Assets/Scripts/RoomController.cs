@@ -29,6 +29,8 @@ public class RoomController : MonoBehaviour {
         chuckSubInstance = GetComponent<ChuckSubInstance>();
         Debug.Assert(chuckSubInstance != null);
 
+        poisInRoom = new List<PoiController>();
+
         partyLight.intensity = 0;
 	}
 	
@@ -51,11 +53,10 @@ public class RoomController : MonoBehaviour {
     public void TurnOnLight() {
         partyLight.intensity = maxIntensity;
         timeSinceFlickerOnset = 0;
-
-        /*
         for(int i = 0; i < poisInRoom.Count; i++) {
             // Signal Each Poi to do something
-        }*/
+            chuckSubInstance.RunFile("Chuck/wehPlayer.ck");
+        }
     }
 
     void OnTriggerEnter(Collider other) {
