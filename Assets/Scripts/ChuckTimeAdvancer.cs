@@ -40,8 +40,6 @@ public class ChuckTimeAdvancer : MonoBehaviour {
     public void TimeStepDone() {
         TriggerRooms();
         timeStepCount++;
-        Debug.Log("timeStep is " + timeStep.ToString());
-        Debug.Log("Boom " + timeStepCount.ToString());
     }
 
     private void TriggerRooms() {

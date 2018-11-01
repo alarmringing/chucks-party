@@ -53,6 +53,7 @@ public class RoomController : MonoBehaviour {
     public void TurnOnLight() {
         partyLight.intensity = maxIntensity;
         timeSinceFlickerOnset = 0;
+        Debug.Log("Number of pois is " + poisInRoom.Count.ToString());
         for(int i = 0; i < poisInRoom.Count; i++) {
             // Signal Each Poi to do something
             chuckSubInstance.RunFile("Chuck/wehPlayer.ck");
