@@ -53,7 +53,6 @@ public class RoomController : MonoBehaviour {
     public void TurnOnLight() {
         partyLight.intensity = maxIntensity;
         timeSinceFlickerOnset = 0;
-        Debug.Log("Number of pois is " + poisInRoom.Count.ToString());
         for(int i = 0; i < poisInRoom.Count; i++) {
             // Signal Each Poi to do something
             chuckSubInstance.RunFile("Chuck/wehPlayer.ck");
@@ -62,14 +61,14 @@ public class RoomController : MonoBehaviour {
 
     void OnTriggerEnter(Collider other) {
         // Add Poi
-        if (other.transform.tag == "poi") {
+        if (other.transform.tag == "Poi") {
             poisInRoom.Add(other.transform.GetComponent<PoiController>());
         }
     }
 
     void OnTriggerExit(Collider other) {
         // Remove Poi
-        if (other.transform.tag == "poi") {
+        if (other.transform.tag == "Poi") {
             poisInRoom.Remove(other.transform.GetComponent<PoiController>());
         }
     }
