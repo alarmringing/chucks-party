@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ChuckTimeAdvancer : MonoBehaviour {
 
-    private float timeStep = 0.3f;
+    private float timeStep = 0.2f;
 
     private ChuckSubInstance chuckSubInstance;
     private ChuckEventListener myAdvancerListener;

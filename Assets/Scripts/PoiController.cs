@@ -59,8 +59,11 @@ public class PoiController : MonoBehaviour {
 
     public void Activate() {
         timeSinceActivation = 0;
-        poiMaterial.SetVector("_OutlineColor", roomsInScene[currentRoomIndex].partyLight.color);
+        poiMaterial.SetVector("_OutlineColor", roomsInScene[currentRoomIndex].roomColor);
         poiMaterial.SetFloat("_Outline", maxOutlineWidth);
+        if(animator.GetBool("IsPartying")) {
+            animator.Play(animator.GetCurrentAnimatorStateInfo(-1).fullPathHash);
+        }
     }
 
     public bool IsWalking() {
