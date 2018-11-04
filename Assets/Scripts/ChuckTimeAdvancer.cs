@@ -48,6 +48,9 @@ public class ChuckTimeAdvancer : MonoBehaviour {
             if(room.IsActivatedOn(timeStepCount % RoomController.BEAT_COUNT)) {
                 room.TurnOnLight();
             }
+            if (timeStepCount % RoomController.BEAT_COUNT == 0) {
+                room.OneBeatFinished();
+            }
         }
     }
 

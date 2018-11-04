@@ -8,6 +8,7 @@ public class RoomController : MonoBehaviour {
     public static int BEAT_COUNT = 8;
 
     public Light partyLight;
+    public Color roomColor;
 
     private ChuckSubInstance chuckSubInstance;
     private float maxIntensity = 15f;
@@ -32,6 +33,7 @@ public class RoomController : MonoBehaviour {
         poisInRoom = new List<PoiController>();
 
         partyLight.intensity = 0;
+        partyLight.color = roomColor;
 	}
 	
 	private void Update() {
@@ -46,6 +48,11 @@ public class RoomController : MonoBehaviour {
         }
     }
 
+    public void SetActivationOn(int beat, bool isActivated) {
+        if (beat >= activatedBeats.Length) return;
+        activatedBeats[beat] = isActivated;
+    }
+
     public bool IsActivatedOn(int beat) {
         return activatedBeats[beat];
     }
@@ -54,8 +61,17 @@ public class RoomController : MonoBehaviour {
         partyLight.intensity = maxIntensity;
         timeSinceFlickerOnset = 0;
         for(int i = 0; i < poisInRoom.Count; i++) {
-            // Signal Each Poi to do something
-            chuckSubInstance.RunFile("Chuck/wehPlayer.ck");
+            if (poisInRoom[i].IsPartying()) {
+                chuckSubInstance.RunFile("Chuck/wehPlayer.ck");
+                poisInRoom[i].Activate();
+            }
+        }
+    }
+
+    public void OneBeatFinished() { // Use this to ask Pois if they will leave.
+        for (int i = 0; i < poisInRoom.Count; i++)
+        {
+            poisInRoom[i].OneBeatFinished();
         }
     }
 
