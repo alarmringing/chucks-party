@@ -7,6 +7,7 @@ public class RoomController : MonoBehaviour {
 
     public static int BEAT_COUNT = 8;
 
+    public string beatFileName;
     public Light partyLight;
     public Color roomColor;
 
@@ -58,11 +59,19 @@ public class RoomController : MonoBehaviour {
     public void TurnOnLight() {
         partyLight.intensity = maxIntensity;
         timeSinceFlickerOnset = 0;
+        chuckSubInstance.RunCode(string.Format(@"
+                    ""Audio/{0}.wav"" => string fileName;
+                    me.sourceDir() + fileName => string filePath;
+                    SndBuf buf => PitShift p => dac;
+                    filePath => buf.read;
+
+                    1::second => now;
+                    ", beatFileName));
+
         for(int i = 0; i < poisInRoom.Count; i++) {
             if (poisInRoom[i].IsPartying()) {
                 chuckSubInstance.RunCode(string.Format(@"
                     ""Audio/bam.wav"" => string fileName;
-
                     me.sourceDir() + fileName => string filePath;
                     SndBuf buf => PitShift p => dac;
                     filePath => buf.read;

@@ -19,6 +19,9 @@ public class ChuckTimeAdvancer : MonoBehaviour {
         myAdvancerListener = gameObject.AddComponent<ChuckEventListener>();
 
         roomsInScene = new List<RoomController>(FindObjectsOfType<RoomController>());
+        for (int i = 0; i < roomsInScene.Count; i++) {
+            roomsInScene[i].beatFileName = "dum" + i.ToString();
+        }
         StartChuckTimer();
     }
 
@@ -43,8 +46,7 @@ public class ChuckTimeAdvancer : MonoBehaviour {
     }
 
     private void TriggerRooms() {
-        foreach (RoomController room in roomsInScene)
-        {
+        foreach (RoomController room in roomsInScene) {
             if(room.IsActivatedOn(timeStepCount % RoomController.BEAT_COUNT)) {
                 room.TurnOnLight();
             }
