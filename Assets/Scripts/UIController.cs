@@ -7,6 +7,7 @@ public class UIController : MonoBehaviour {
 
     public Camera mainCamera;
     public RoomUIController roomUIController;
+    public Button quitButton;
     public Button addPoiButton;
     public Button randomPoiButton;
     public PiUIManager piUIManager;
@@ -34,6 +35,7 @@ public class UIController : MonoBehaviour {
         poiNoteMenu = piUIManager.GetPiUIOf("Poi Note Menu");
         EditPoiMenus();
 
+        quitButton.onClick.AddListener(Application.Quit);
         addPoiButton.onClick.AddListener(ShowPoiPersonalityMenu);
         randomPoiButton.onClick.AddListener(delegate { SpawnNewPoi(null, true); });
     }
