@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum PoiType { BigPoi, SmolPoi };
+public enum PoiSizeType { BigPoi, SmolPoi };
+public enum PoiPersonalityType { ShiPoi, NormiPoi, FabPoi };
 
 public class PoiController : MonoBehaviour {
 
-    private PoiType poiType;
+    private PoiSizeType poiType;
+    private PoiPersonalityType poiPersonalityType;
     public int poiNoteOffset;
     private int moveRoomAfter;
 
@@ -36,7 +38,9 @@ public class PoiController : MonoBehaviour {
         Debug.Assert(animator != null);
         lineRenderer = gameObject.AddComponent<LineRenderer>();
 
-        if (poiType == PoiType.SmolPoi) {
+        moveRoomAfter = (int) Random.Range(5, 20);
+
+        if (poiType == PoiSizeType.SmolPoi) {
             transform.localScale *= 0.6f; // Scale smaller.
         }
         
@@ -56,22 +60,30 @@ public class PoiController : MonoBehaviour {
         MoveToNewRoom();
     }
 
-    public void SetPoiProperties(PoiType newPoiType, int newPoiNote, Vector4 newPoiColor, int newMoveAfter) {
-        poiType = newPoiType;
+    public void SetPoiProperties(PoiSizeType newPoiSize, int newPoiNote, Vector4 newPoiColor, PoiPersonalityType newPoiPersonality) {
+        poiType = newPoiSize;
         poiNoteOffset = newPoiNote;
-        if (newPoiType == PoiType.BigPoi) poiNoteOffset -= 12; // Lower octave is BigPoi.
+        if (newPoiSize == PoiSizeType.BigPoi) poiNoteOffset -= 12; // Lower octave is BigPoi.
+        poiPersonalityType = newPoiPersonality;
         poiColor = newPoiColor;
-        moveRoomAfter = newMoveAfter;
     }
 
     public void OneBeatFinished() {
-        if (!isMoving) {
-            if (roundsInSameRoom > moveRoomAfter) {
-                MoveToNewRoom();
-                roundsInSameRoom = 0;
-            }
-            roundsInSameRoom++;
+        if (isMoving) return;
+
+        if (poiPersonalityType == PoiPersonalityType.FabPoi 
+            && roomsInScene[currentRoomIndex].GetNumPois() < 2) {
+            MoveToNewRoom(); // If FabPoi, then move if no one else is in room.
+        } else if (poiPersonalityType == PoiPersonalityType.ShiPoi 
+            && roomsInScene[currentRoomIndex].GetNumPois() > 1) {
+            MoveToNewRoom(); // If ShiPoi, move if anyone else is in room.
         }
+
+        if (poiPersonalityType != PoiPersonalityType.ShiPoi 
+            && roundsInSameRoom > moveRoomAfter) {
+            MoveToNewRoom(); // If not ShiPoi, move around!
+        }
+        roundsInSameRoom++;
     }
 
     public void Activate() {
@@ -118,6 +130,8 @@ public class PoiController : MonoBehaviour {
     }
 
     private void MoveToNewRoom() {
+        roundsInSameRoom = 0;
+
         int previousRoomIndex = currentRoomIndex;
         while (currentRoomIndex == previousRoomIndex) { // Choose new room that is not same is previous.
             currentRoomIndex = (int)Random.Range(0, roomsInScene.Count - 0.5f);

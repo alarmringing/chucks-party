@@ -53,6 +53,8 @@ public class RoomController : MonoBehaviour {
         return activatedBeats[beat];
     }
 
+    public int GetNumPois() { return poisInRoom.Count; }
+
     public void TurnOnLight() {
         partyLight.intensity = maxIntensity;
         timeSinceFlickerOnset = 0;
