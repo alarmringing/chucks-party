@@ -16,9 +16,11 @@ public class UIController : MonoBehaviour {
     public ParticleSystem poofEffectParticle;
 
     private PiUI poiSizeMenu;
+    private PiUI poiPersonalityMenu;
     private PiUI poiNoteMenu;
 
     private PoiType nextPoiSize;
+    private int nextMoveAfter;
     private int nextPoiNote;
     private Color nextPoiColor;
 
@@ -28,6 +30,7 @@ public class UIController : MonoBehaviour {
         roomUIController.GetComponent<CanvasGroup>().alpha = 0;
 
         poiSizeMenu = piUIManager.GetPiUIOf("Poi Size Menu");
+        poiPersonalityMenu = piUIManager.GetPiUIOf("Poi Personality Menu");
         poiNoteMenu = piUIManager.GetPiUIOf("Poi Note Menu");
         EditPoiMenus();
 
@@ -41,6 +44,13 @@ public class UIController : MonoBehaviour {
         poiSizeMenu.closeTransition = PiUI.TransitionType.ScaleAndFan;
         foreach (PiUI.PiData poiSizeData in poiSizeMenu.piData) {
             poiSizeData.onSlicePressed.AddListener(delegate { ShowPoiNoteMenu(poiSizeData); });
+        }
+
+        // Poi Personality Menu
+        poiPersonalityMenu.openTransition = PiUI.TransitionType.ScaleAndFan;
+        poiPersonalityMenu.closeTransition = PiUI.TransitionType.ScaleAndFan;
+        foreach (PiUI.PiData poiPersonalityData in poiPersonalityMenu.piData) {
+            poiPersonalityData.onSlicePressed.AddListener(delegate { ShowPoiPersonalityMenu(poiPersonalityData); });
         }
 
         // Poi Note Menu
@@ -82,6 +92,24 @@ public class UIController : MonoBehaviour {
                 break;
         }
         poiSizeMenu.CloseMenu();
+        poiPersonalityMenu.OpenMenu(new Vector2(Screen.width / 2f, Screen.height / 2f));
+    }
+
+    private void ShowPoiPersonalityMenu(PiUI.PiData poiPersonalityData)
+    {
+        switch (poiPersonalityData.sliceLabel)
+        {
+            case ("Lazi Poi"):
+                nextMoveAfter = 20;
+                break;
+            case ("Busi Poi"):
+                nextMoveAfter = 5;
+                break;
+            case ("Meh Poi"):
+                nextMoveAfter = 10;
+                break;
+        }
+        poiPersonalityMenu.CloseMenu();
         poiNoteMenu.OpenMenu(new Vector2(Screen.width / 2f, Screen.height / 2f));
     }
 
@@ -94,6 +122,7 @@ public class UIController : MonoBehaviour {
         } else {
             if (Random.value > 0.5f) nextPoiSize = PoiType.BigPoi;
             else nextPoiSize = PoiType.SmolPoi;
+            nextMoveAfter = (int) Random.Range(5, 20);
             int randomNoteIndex = (int)Random.Range(0, poiNoteMenu.piData.Length - 0.5f);
             poiNoteData = poiNoteMenu.piData[randomNoteIndex];
         }
@@ -103,7 +132,7 @@ public class UIController : MonoBehaviour {
         poofEffectParticle.Play();
         spawnPoint.GetComponent<AudioSource>().Play();
         GameObject newPoi = Instantiate(poiPrefab, spawnPoint.position, Quaternion.identity);
-        newPoi.GetComponent<PoiController>().SetPoiProperties(nextPoiSize, nextPoiNote, nextPoiColor);
+        newPoi.GetComponent<PoiController>().SetPoiProperties(nextPoiSize, nextPoiNote, nextPoiColor, nextMoveAfter);
     }
 
     private void ShowRoomUI() {

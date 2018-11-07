@@ -9,6 +9,7 @@ public class PoiController : MonoBehaviour {
 
     private PoiType poiType;
     public int poiNoteOffset;
+    private int moveRoomAfter;
 
     public Shader outlineShader;
     public bool showPath = true;
@@ -24,8 +25,6 @@ public class PoiController : MonoBehaviour {
     private List<RoomController> roomsInScene;
     private LineRenderer lineRenderer;
 
-    [SerializeField]
-    private int moveRoomAfter = 3;
     private int roundsInSameRoom = 0;
     private int currentRoomIndex = 0;
     private bool isMoving = false;
@@ -57,11 +56,12 @@ public class PoiController : MonoBehaviour {
         MoveToNewRoom();
     }
 
-    public void SetPoiProperties(PoiType newPoiType, int newPoiNote, Vector4 newPoiColor) {
+    public void SetPoiProperties(PoiType newPoiType, int newPoiNote, Vector4 newPoiColor, int newMoveAfter) {
         poiType = newPoiType;
         poiNoteOffset = newPoiNote;
         if (newPoiType == PoiType.BigPoi) poiNoteOffset -= 12; // Lower octave is BigPoi.
         poiColor = newPoiColor;
+        moveRoomAfter = newMoveAfter;
     }
 
     public void OneBeatFinished() {
