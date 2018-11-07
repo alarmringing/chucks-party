@@ -8,6 +8,7 @@ public class UIController : MonoBehaviour {
     public Camera mainCamera;
     public RoomUIController roomUIController;
     public Button addPoiButton;
+    public Button randomPoiButton;
     public PiUIManager piUIManager;
 
     public Transform spawnPoint;
@@ -31,6 +32,7 @@ public class UIController : MonoBehaviour {
         EditPoiMenus();
 
         addPoiButton.onClick.AddListener(ShowPoiSizeMenu);
+        randomPoiButton.onClick.AddListener(delegate { SpawnNewPoi(null, true); });
     }
 
     private void EditPoiMenus() {
@@ -45,7 +47,7 @@ public class UIController : MonoBehaviour {
         poiNoteMenu.openTransition = PiUI.TransitionType.ScaleAndFan;
         poiNoteMenu.closeTransition = PiUI.TransitionType.ScaleAndFan;
         foreach (PiUI.PiData poiNoteData in poiNoteMenu.piData) {
-            poiNoteData.onSlicePressed.AddListener(delegate { SpawnNewPoi(poiNoteData); });
+            poiNoteData.onSlicePressed.AddListener(delegate { SpawnNewPoi(poiNoteData, false); });
         }
 
         // Edit colors
@@ -83,11 +85,18 @@ public class UIController : MonoBehaviour {
         poiNoteMenu.OpenMenu(new Vector2(Screen.width / 2f, Screen.height / 2f));
     }
 
-    private void SpawnNewPoi(PiUI.PiData poiNoteData) {
-        if (!isPoiMenuOpen) return;
+    private void SpawnNewPoi(PiUI.PiData poiNoteData, bool isRandom) {
+        if (!isRandom) {
+            if (!isPoiMenuOpen) return;
 
-        poiNoteMenu.CloseMenu();
-        isPoiMenuOpen = false;
+            poiNoteMenu.CloseMenu();
+            isPoiMenuOpen = false;
+        } else {
+            if (Random.value > 0.5f) nextPoiSize = PoiType.BigPoi;
+            else nextPoiSize = PoiType.SmolPoi;
+            int randomNoteIndex = (int)Random.Range(0, poiNoteMenu.piData.Length - 0.5f);
+            poiNoteData = poiNoteMenu.piData[randomNoteIndex];
+        }
         nextPoiNote = poiNoteData.order;
         nextPoiColor = poiNoteData.highlightedColor;
 
@@ -96,7 +105,7 @@ public class UIController : MonoBehaviour {
         GameObject newPoi = Instantiate(poiPrefab, spawnPoint.position, Quaternion.identity);
         newPoi.GetComponent<PoiController>().SetPoiProperties(nextPoiSize, nextPoiNote, nextPoiColor);
     }
-	
+
     private void ShowRoomUI() {
         if (!mainCamera.enabled) return;
         RaycastHit hit;
