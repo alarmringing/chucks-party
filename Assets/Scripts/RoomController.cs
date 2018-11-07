@@ -12,7 +12,7 @@ public class RoomController : MonoBehaviour {
     public Color roomColor;
 
     private ChuckSubInstance chuckSubInstance;
-    private float maxIntensity = 15f;
+    private float maxIntensity = 20f;
     private float decayDuration = 0.7f;
     private float timeSinceFlickerOnset = 0f;
 

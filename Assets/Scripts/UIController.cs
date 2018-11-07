@@ -166,6 +166,7 @@ public class UIController : MonoBehaviour {
             if (Input.GetMouseButtonDown(0) && !piUIManager.OverAMenu()) {
                 if (poiSizeMenu.openedMenu) poiSizeMenu.CloseMenu();
                 if (poiNoteMenu.openedMenu) poiNoteMenu.CloseMenu();
+                if (poiPersonalityMenu.openedMenu) poiPersonalityMenu.CloseMenu();
                 isPoiMenuOpen = false;
             }
         }
