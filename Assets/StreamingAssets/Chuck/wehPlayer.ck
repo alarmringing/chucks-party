@@ -2,11 +2,11 @@
 "../Audio/weh.wav" => string fileName;
 
 me.sourceDir() + fileName => string filePath;
-SndBuf buf => dac;
+SndBuf buf => PitShift p => dac;
 filePath => buf.read;
-1 => buf.rate;
-0.3 => buf.gain;
-1.5 => buf.rate;
-0 => buf.pos;
+
+float noteToShift;
+1 => noteToShift;
+Math.pow(2, noteToShift / 12) => buf.rate;
 
 1::second => now;

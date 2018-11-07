@@ -58,7 +58,19 @@ public class RoomController : MonoBehaviour {
         timeSinceFlickerOnset = 0;
         for(int i = 0; i < poisInRoom.Count; i++) {
             if (poisInRoom[i].IsPartying()) {
-                chuckSubInstance.RunFile("Chuck/wehPlayer.ck");
+                chuckSubInstance.RunCode(string.Format(@"
+                    ""Audio/bam.wav"" => string fileName;
+
+                    me.sourceDir() + fileName => string filePath;
+                    SndBuf buf => PitShift p => dac;
+                    filePath => buf.read;
+
+                    float noteToShift;
+                    {0} => noteToShift;
+                    Math.pow(2, noteToShift / 12) => buf.rate;
+
+                    1::second => now;
+                    ", poisInRoom[i].poiNoteOffset));
                 poisInRoom[i].Activate();
             }
         }

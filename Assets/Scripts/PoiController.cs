@@ -8,7 +8,7 @@ public enum PoiType { BigPoi, SmolPoi };
 public class PoiController : MonoBehaviour {
 
     private PoiType poiType;
-    private int poiNote;
+    public int poiNoteOffset;
 
     public Shader outlineShader;
     public bool showPath = true;
@@ -59,7 +59,8 @@ public class PoiController : MonoBehaviour {
 
     public void SetPoiProperties(PoiType newPoiType, int newPoiNote, Vector4 newPoiColor) {
         poiType = newPoiType;
-        poiNote = newPoiNote;
+        poiNoteOffset = newPoiNote;
+        if (newPoiType == PoiType.BigPoi) poiNoteOffset -= 12; // Lower octave is BigPoi.
         poiColor = newPoiColor;
     }
 

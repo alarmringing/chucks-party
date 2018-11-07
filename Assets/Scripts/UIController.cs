@@ -18,7 +18,7 @@ public class UIController : MonoBehaviour {
     private PiUI poiNoteMenu;
 
     private PoiType nextPoiSize;
-    private int nextPoiNoteOffset;
+    private int nextPoiNote;
     private Color nextPoiColor;
 
     private bool isPoiMenuOpen = false;
@@ -88,12 +88,13 @@ public class UIController : MonoBehaviour {
 
         poiNoteMenu.CloseMenu();
         isPoiMenuOpen = false;
-        nextPoiNoteOffset = poiNoteData.order;
+        nextPoiNote = poiNoteData.order;
         nextPoiColor = poiNoteData.highlightedColor;
 
         poofEffectParticle.Play();
+        spawnPoint.GetComponent<AudioSource>().Play();
         GameObject newPoi = Instantiate(poiPrefab, spawnPoint.position, Quaternion.identity);
-        newPoi.GetComponent<PoiController>().SetPoiProperties(nextPoiSize, nextPoiNoteOffset, nextPoiColor);
+        newPoi.GetComponent<PoiController>().SetPoiProperties(nextPoiSize, nextPoiNote, nextPoiColor);
     }
 	
     private void ShowRoomUI() {
