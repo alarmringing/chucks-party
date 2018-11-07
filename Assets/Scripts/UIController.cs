@@ -87,6 +87,7 @@ public class UIController : MonoBehaviour {
     }
 
     private void ShowPoiSizeMenu(PiUI.PiData poiPersonalityData) {
+        if (!Input.GetMouseButtonDown(0)) return;
         switch (poiPersonalityData.sliceLabel)
         {
             case ("Shi Poi"):
@@ -105,6 +106,7 @@ public class UIController : MonoBehaviour {
 
     private void ShowPoiNoteMenu(PiUI.PiData poiSizeData)
     {
+        if (!Input.GetMouseButtonDown(0)) return;
         switch (poiSizeData.sliceLabel)
         {
             case ("Big Poi"):
