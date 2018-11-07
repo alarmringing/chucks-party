@@ -8,6 +8,7 @@ public enum PoiType { HighPoi, LowPoi };
 public class PoiController : MonoBehaviour {
 
     public Shader outlineShader;
+    public bool showPath = true;
 
     private Material poiMaterial;
     private Color poiColor = Color.red; // TODO: temp
@@ -18,6 +19,7 @@ public class PoiController : MonoBehaviour {
     private NavMeshAgent navMeshAgent;
     private Animator animator;
     private List<RoomController> roomsInScene;
+    private LineRenderer lineRenderer;
 
     [SerializeField]
     private int moveRoomAfter = 3;
@@ -30,7 +32,8 @@ public class PoiController : MonoBehaviour {
         Debug.Assert(navMeshAgent != null);
         animator = GetComponent<Animator>();
         Debug.Assert(animator != null);
-
+        lineRenderer = gameObject.AddComponent<LineRenderer>();
+        
         // Create unique material for each Poi, and make sure it's not saved in filesystem too.
         poiMaterial = new Material(outlineShader);
         poiMaterial.hideFlags = HideFlags.HideAndDontSave;
@@ -84,10 +87,12 @@ public class PoiController : MonoBehaviour {
 
     private Vector2 RandomCoordinateInRoom(RoomController newRoom) {
         Bounds roomBounds = newRoom.GetComponent<BoxCollider>().bounds;
-        float xOffset = (Random.Range(0, roomBounds.max.x) - roomBounds.max.x / 2) * 0.6f;
-        float zOffset = (Random.Range(0, roomBounds.max.z) - roomBounds.max.z / 2) * 0.6f;
+        //Vector3 roomExtents = roomBounds.extents;
 
-        return new Vector2(roomBounds.center.x + xOffset, roomBounds.center.z + zOffset);
+        float xPos = Random.Range(roomBounds.min.x, roomBounds.max.x);
+        float zPos = Random.Range(roomBounds.min.z, roomBounds.max.z);
+
+        return new Vector2(xPos, zPos);
     }
 
     private Vector3 ClosestPointOnNavMesh(Vector3 target) {
@@ -101,7 +106,7 @@ public class PoiController : MonoBehaviour {
     private void MoveToNewRoom() {
         int previousRoomIndex = currentRoomIndex;
         while (currentRoomIndex == previousRoomIndex) { // Choose new room that is not same is previous.
-            currentRoomIndex = (int)Random.Range(0, roomsInScene.Count - 1);
+            currentRoomIndex = (int)Random.Range(0, roomsInScene.Count - 0.5f);
         }
         
         RoomController newRoom = roomsInScene[currentRoomIndex];
@@ -125,6 +130,7 @@ public class PoiController : MonoBehaviour {
                         animator.SetBool("IsWalking", false);
                         animator.SetBool("IsPartying", true);
                         isMoving = false;
+                        transform.LookAt(roomsInScene[currentRoomIndex].transform.position);
                     }
                 }
             }
@@ -134,5 +140,13 @@ public class PoiController : MonoBehaviour {
     private void Update() {
         NavigationFinishedCheck();
         FadeActivation();
+
+        if (navMeshAgent.hasPath && showPath) {
+            lineRenderer.enabled = true;
+            lineRenderer.positionCount = navMeshAgent.path.corners.Length;
+            lineRenderer.SetPositions(navMeshAgent.path.corners);
+        } else {
+            lineRenderer.enabled = false;
+        }
     }
 }
