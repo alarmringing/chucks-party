@@ -12,6 +12,7 @@ public class UIController : MonoBehaviour {
 
     public Transform spawnPoint;
     public GameObject poiPrefab;
+    public ParticleSystem poofEffectParticle;
 
     private PiUI poiSizeMenu;
     private PiUI poiNoteMenu;
@@ -90,6 +91,7 @@ public class UIController : MonoBehaviour {
         nextPoiNoteOffset = poiNoteData.order;
         nextPoiColor = poiNoteData.highlightedColor;
 
+        poofEffectParticle.Play();
         GameObject newPoi = Instantiate(poiPrefab, spawnPoint.position, Quaternion.identity);
         newPoi.GetComponent<PoiController>().SetPoiProperties(nextPoiSize, nextPoiNoteOffset, nextPoiColor);
     }
