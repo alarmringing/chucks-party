@@ -16,6 +16,8 @@ public class UIController : MonoBehaviour {
     public GameObject poiPrefab;
     public ParticleSystem poofEffectParticle;
 
+    private RoomController selectedRoomController;
+
     private PiUI poiSizeMenu;
     private PiUI poiPersonalityMenu;
     private PiUI poiNoteMenu;
@@ -149,17 +151,20 @@ public class UIController : MonoBehaviour {
         var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out hit, 100f, 1 << LayerMask.NameToLayer("Room"))) {
-            RoomController hitRoomController = hit.collider.GetComponent<RoomController>();
-            Vector2 hitRoomCoord = mainCamera.WorldToScreenPoint(hitRoomController.transform.position); // Drops z.
+            selectedRoomController = hit.collider.GetComponent<RoomController>();
             roomUIController.GetComponent<CanvasGroup>().alpha = 1;
-            roomUIController.Activate(hitRoomController, hitRoomCoord);
         }
         else { // Cursor is not over any room
             roomUIController.GetComponent<CanvasGroup>().alpha = 0;
         }
+        if (selectedRoomController) {
+            Vector2 selectedRoomCoord = mainCamera.WorldToScreenPoint(selectedRoomController.transform.position); // Drops z.
+            roomUIController.Activate(selectedRoomController, selectedRoomCoord);
+        }
+
     }
 
-	private void Update () {
+    private void Update () {
         if (!isPoiMenuOpen) {
             ShowRoomUI();
         } else {

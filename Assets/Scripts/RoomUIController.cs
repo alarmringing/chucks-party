@@ -20,15 +20,14 @@ public class RoomUIController : MonoBehaviour {
     }
 
     public void Activate(RoomController mouseOverRoomController, Vector2 coord) {
+        // Show this UI over the center of the room
+        GetComponent<RectTransform>().anchoredPosition = coord;
+
         if (mouseOverRoomController == roomController) return;
-
         roomController = mouseOverRoomController;
-
         for (int i = 0; i < toggles.Count; i++) {
             toggles[i].isOn = roomController.IsActivatedOn(i);
         }
-        // Show this UI over the center of the room
-        GetComponent<RectTransform>().anchoredPosition = coord;
     }
 
     //Output the new state of the Toggle into Text
