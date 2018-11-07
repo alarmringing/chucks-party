@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum PoiType { HighPoi, LowPoi };
+public enum PoiType { BigPoi, SmolPoi };
 
 public class PoiController : MonoBehaviour {
+
+    private PoiType poiType;
+    private int poiNote;
 
     public Shader outlineShader;
     public bool showPath = true;
 
     private Material poiMaterial;
-    private Color poiColor = Color.red; // TODO: temp
-    private float maxOutlineWidth = 0.2f;
+    private Color poiColor = Color.red;
+    private float maxOutlineWidth = 0.25f;
     private float outlineDecayDuration = 0.7f;
     private float timeSinceActivation = 0f;
 
@@ -33,11 +36,15 @@ public class PoiController : MonoBehaviour {
         animator = GetComponent<Animator>();
         Debug.Assert(animator != null);
         lineRenderer = gameObject.AddComponent<LineRenderer>();
+
+        if (poiType == PoiType.SmolPoi) {
+            transform.localScale *= 0.6f; // Scale smaller.
+        }
         
         // Create unique material for each Poi, and make sure it's not saved in filesystem too.
         poiMaterial = new Material(outlineShader);
         poiMaterial.hideFlags = HideFlags.HideAndDontSave;
-        poiMaterial.SetVector("_Color", new Vector4(1f, 0, 0, 1f));
+        poiMaterial.SetVector("_Color", poiColor);
         poiMaterial.SetVector("_OutlineColor", new Vector4(0f, 0f, 0f, 1f));
         poiMaterial.SetFloat("_Outline", 0f);
 
@@ -48,6 +55,12 @@ public class PoiController : MonoBehaviour {
 
         roomsInScene = new List<RoomController>(FindObjectsOfType<RoomController>());
         MoveToNewRoom();
+    }
+
+    public void SetPoiProperties(PoiType newPoiType, int newPoiNote, Vector4 newPoiColor) {
+        poiType = newPoiType;
+        poiNote = newPoiNote;
+        poiColor = newPoiColor;
     }
 
     public void OneBeatFinished() {

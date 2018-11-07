@@ -20,10 +20,6 @@ public class RoomController : MonoBehaviour {
 
     private void Awake() {
         activatedBeats = new bool[BEAT_COUNT]; // Defaults to false.
-
-        //Debug
-        activatedBeats[0] = true;
-        activatedBeats[4] = true;
     }
 
 	private void Start() {
